@@ -89,4 +89,4 @@ module.exports = StoreB;
 
 ### Run test in terminal
 * Run `npm test`
-* Currently uses chrome, though you can use phantomJS
+* Currently uses phantomJS, though you can use chrome
