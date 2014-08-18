@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/christianalfoni/react-flux-dispatcher.svg?branch=master)](https://travis-ci.org/christianalfoni/react-flux-dispatcher)
+
 ## React Dispatcher
 
 Part of the FLUX architecture, the dispatcher will let stores register to it with
