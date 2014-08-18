@@ -12,6 +12,7 @@ Download from **dist**: [ReactDispatcher.min.js](https://rawgithub.com/christian
 specific stores to finish their registered callback
 - The **waitFor** method gives errors if circular dependencies occur
 - The **waitFor** callback is bound to the store for conveniance
+- The **waitFor** method takes either a single store or an array of stores
 - Works with the common module loaders
 
 ### Example
