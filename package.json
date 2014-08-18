@@ -1,6 +1,6 @@
 {
   "name": "react-flux-dispatcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React dispatcher",
   "main": "./app/main.js",
   "scripts": {
@@ -33,6 +33,6 @@
     "watchify": "^1.0.2"
   },
   "dependencies": {
-    "es6-promise": "^1.0.0",
+    "es6-promise": "^1.0.0"
   }
 }
