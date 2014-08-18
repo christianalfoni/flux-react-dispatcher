@@ -3,7 +3,7 @@
 Part of the FLUX architecture, the dispatcher will let stores register to it with
 callbacks. Read more about FLUX and the dispatcher over at [Facebook Flux](http://facebook.github.io/flux/).
 
-Download from **dist**: [ReactDispatcher.min.js]()
+Download from **dist**: [ReactDispatcher.min.js](https://rawgithub.com/christianalfoni/react-dispatcher/master/dist/ReactDispatcher.min.js)
 
 ### Scope
 - Has a **register** method for registering callbacks to stores
