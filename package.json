@@ -1,8 +1,8 @@
 {
-  "name": "react-dispatcher",
+  "name": "react-flux-dispatcher",
   "version": "1.0.0",
   "description": "React dispatcher",
-  "main": "gulp",
+  "main": "./app/main.js",
   "scripts": {
     "test": "./node_modules/karma/bin/karma start karma.conf.js"
   },
@@ -11,7 +11,6 @@
   "devDependencies": {
     "browserify": "^5.9.3",
     "chai": "^1.9.1",
-    "es6-promise": "^1.0.0",
     "gulp": "^3.8.7",
     "gulp-concat": "^2.3.4",
     "gulp-if": "^1.2.4",
@@ -32,5 +31,8 @@
     "reactify": "^0.14.0",
     "vinyl-source-stream": "^0.1.1",
     "watchify": "^1.0.2"
+  },
+  "dependencies": {
+    "es6-promise": "^1.0.0",
   }
 }
