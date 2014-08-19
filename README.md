@@ -10,41 +10,54 @@ Download from **dist**: [ReactDispatcher.min.js](https://rawgithub.com/christian
 ### Scope
 - Has a **register** method for registering callbacks to stores
 - Has a **dispatch** method for dispatching a payload to all stores
-- Has a **waitFor** method available on the registered callback context to wait for
-specific stores to finish their registered callback
+- The callback on **register** receives the payload and a **waitFor** function
+- The **waitFor** function is used to wait for specific stores to finish their registered callback before continuing
 - The **waitFor** method gives errors if circular dependencies occur
-- The **waitFor** callback is bound to the store for conveniance
+- The **waitFor** callback is bound to the store and receives the payload, for conveniance
 - The **waitFor** method takes either a single store or an array of stores
-- Works with the common module loaders
+- The dispatcher works with common module loaders
 
 ### Example
-*Dispatcher.js*
 ```javascript
 var ReactDispatcher = require('ReactDispatcher');
 var Dispatcher = new ReactDispatcher();
-module.exports = Dispatcher;
+
+var StoreA = {
+	data: {},
+	handleData: function (payload) {
+		this.data = payload.data;
+	}
+};
+var StoreB = {};
+Dispatcher.register(StoreA, function (payload, waitFor) {
+	switch (payload.type) {
+		case 'update':
+			waitFor(StoreB, StoreA.handleData);
+			break;
+	}
+});
+```
+You can combine the dispatcher with the [react-flux-store](https://github.com/christianalfoni/react-flux-store), giving you this syntax:
+
+*Dispatcher.js*
+```javascript
+var ReactDispatcher = require('react-flux-dispatcher');
+module.exports = new ReactDispatcher();
 ```
 *StoreA.js*
 ```javascript
+var Store = require('react-flux-store');
 var Dispatcher = require('./Dispatcher.js');
-var EventEmitter = require('events').EventEmitter;
-var merge = require('react/lib/merge');
+var StoreB = require('./StoreB.js');
 
-var StoreA = merge(EventEmitter, {
-	data: []
-});
-
-Dispatcher.register(StoreA, function (payload) {
-	switch (payload.type) {
-		case 'updateData':
-			return new Promise(function (resolve) {
-				StoreA.data = payload.data;
-				payload.storeAWasHere = true;
-				setTimeout(function () {
-					resolve(); // Delay resolvement of StoreA by 500 ms
-				}, 500);
-			});
-			break;
+var StoreA = Store.create(Dispatcher, {
+	data: {},
+	dispatch: function (payload, waitFor) {
+		waitFor(StoreB, this.replaceData);
+	},
+	replaceData: function (payload) {
+		this.data = payload.data;
+		this.emit('change');
 	}
 });
 
@@ -52,27 +65,20 @@ module.exports = StoreA;
 ```
 *StoreB.js*
 ```javascript
+var Store = require('react-flux-store');
 var Dispatcher = require('./Dispatcher.js');
-var EventEmitter = require('events').EventEmitter;
-var merge = require('react/lib/merge');
-var StoreA = require('./StoreA.js');
 
-var StoreB = merge(EventEmitter, {
-
-});
-
-Dispatcher.register(StoreB, function (payload) {
-	switch (payload.type) {
-		case 'updateData':
-			this.waitFor(StoreA, function () { // Runs after 500 ms
-				console.log(payload.storeAWasHere); // true
-				this.emit('update'); // callback of waitFor is bound to the store
-			});
-			break;
+var StoreB = Store.create(Dispatcher, {
+	data: {},
+	dispatch: function (payload, waitFor) {
+		this.manageData(payload.data);
+	},
+	manageData: function (data) {
+		// Do something to the data object
 	}
 });
 
-module.exports = StoreB;
+module.exports = StoreA;
 ```
 
 ## Contribute

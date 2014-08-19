@@ -93,8 +93,8 @@ describe('Dispatcher', function() {
   	var fakeStoreA = {};
   	var fakeStoreB = {};
   	var fakeStoreBCalled = false;
-  	Dispatcher.register(fakeStoreA, function () {
-  		return this.waitFor(fakeStoreB, function () {
+  	Dispatcher.register(fakeStoreA, function (payload, waitFor) {
+  		return waitFor(fakeStoreB, function () {
   			expect(fakeStoreBCalled).to.equal(true);
   			done();
   		});
@@ -110,17 +110,35 @@ describe('Dispatcher', function() {
   	var Dispatcher = new ReactDispatcher();
   	var fakeStoreA = {};
   	var fakeStoreB = {};
-  	Dispatcher.register(fakeStoreA, function () {
-  		return this.waitFor(fakeStoreB, function () {});
+  	Dispatcher.register(fakeStoreA, function (payload, waitFor) {
+  		return waitFor(fakeStoreB, function () {});
   	});
-  	Dispatcher.register(fakeStoreB, function () {
-  		var context = this;
+  	Dispatcher.register(fakeStoreB, function (payload, waitFor) {
   		var throwFunc = function () {
-  			context.waitFor(fakeStoreA, function () {});
+  			waitFor(fakeStoreA, function () {});
   		};
   		expect(throwFunc).to.throw(Error);
   	});
   	Dispatcher.dispatch();
+
+  });
+  it('should receive the payload in the waitFor callback', function () {
+    var Promise = require('es6-promise').Promise;
+    var ReactDispatcher = require('../app/main.js');
+    var Dispatcher = new ReactDispatcher();
+    var payload = {};
+    var fakeStoreA = {};
+    var fakeStoreB = {};
+    Dispatcher.register(fakeStoreA, function (registerPayload, waitFor) {
+      expect(registerPayload).to.equal(payload);
+      return waitFor(fakeStoreB, function (waitForPayload) {
+        expect(waitForPayload).to.equal(payload);
+      });
+    });
+    Dispatcher.register(fakeStoreB, function () {
+
+    });
+    Dispatcher.dispatch(payload);
 
   });
 });

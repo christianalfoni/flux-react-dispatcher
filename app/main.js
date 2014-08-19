@@ -19,7 +19,7 @@ var getCallback = function (callbacks, store) {
 // other stores
 var createWaitForMethod = function (store, dispatcher) {
 	
-	return function (storeDeps, callback) {
+	return function (payload, storeDeps, callback) {
 
 		storeDeps = Array.isArray(storeDeps) ? storeDeps : [storeDeps];
 
@@ -41,7 +41,7 @@ var createWaitForMethod = function (store, dispatcher) {
 					return dispatcher.promises[index];
 				}
 			});
-			return Promise.all(selectedPromises).then(callback.bind(store));
+			return Promise.all(selectedPromises).then(callback.bind(store, payload));
 		} else {
 			throw new Error('There is an infinite loop on your waitFor handling');
 		}
@@ -53,8 +53,8 @@ var createWaitForMethod = function (store, dispatcher) {
 // The wrapper ensures that "true" is returned
 // even though the callback returns undefined
 var createWrapper = function (context, callback) {
-	return function (payload) {
-		var result = callback.call(context, payload);
+	return function (payload, waitFor) {
+		var result = callback.call(context, payload, waitFor);
 		if (result === undefined) {
 			return true;
 		} else {
@@ -71,15 +71,11 @@ function Dispatcher () {
 Dispatcher.prototype = {
 
     register: function(store, callback) {
-    		// Create a context to bind the store to the
-    		// waitFor method. This is needed to resolve dependencies
-        var context = {
-            waitFor: createWaitForMethod(store, this)
-        };
         this.callbacks.push({
             store: store,
             func: createWrapper(context, callback),
-            deps: []
+            deps: [],
+            waitFor: createWaitForMethod(store, this)
         });
     },
 
@@ -87,6 +83,7 @@ Dispatcher.prototype = {
         var resolves = [];
         var rejects = [];
 
+        payload = payload || {};
         // First create array of promises for each callback and
         // add their respective resolves and rejects to individual arrays
         // for later reference
@@ -102,7 +99,7 @@ Dispatcher.prototype = {
             // Callback can return an obj, to resolve, or a promise, to chain,
             // no matter what, resolve or reject the callback-promise. Pass
             // the returned value or payload by default
-            Promise.resolve(callback.func(payload)).then(function(returnValue) {
+            Promise.resolve(callback.func(payload, callback.waitFor.bind(null, payload))).then(function(returnValue) {
                 resolves[i](returnValue || payload);
             }, function(err) {
                 new Error('Dispatcher callback unsuccessful');
