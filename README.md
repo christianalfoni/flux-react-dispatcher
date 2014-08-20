@@ -23,6 +23,10 @@ var ReactDispatcher = require('ReactDispatcher');
 var Dispatcher = new ReactDispatcher();
 
 var StoreA = {
+	dispatch: function () {}
+};
+
+var StoreB = {
 	data: {},
 	handleData: function (payload) {
 		this.data = payload.data;
@@ -30,16 +34,14 @@ var StoreA = {
 	dispatch: function (payload, waitFor) {
 		switch (payload.type) {
 			case 'update':
-				waitFor('StoreB', this.handleData);
+				waitFor(StoreA, this.handleData);
 				break;
 		}
 	}
+
 };
-var StoreB = {
-	dispatch: function () {}
-};
-Dispatcher.register('StoreA', StoreA, StoreA.dispatch); // Binds the callback to the store
-Dispatcher.register('StoreB', StoreB, StoreB.dispatch);
+Dispatcher.register(StoreA, StoreA.dispatch); // Binds the callback to the store
+Dispatcher.register(StoreB, StoreB.dispatch);
 Dispatcher.dispatch({});
 ```
 
