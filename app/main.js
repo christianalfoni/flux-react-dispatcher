@@ -52,6 +52,7 @@ var createWaitForMethod = function (store, dispatcher) {
 
 // The wrapper ensures that "true" is returned
 // even though the callback returns undefined
+// Is this because of Promise?
 var createWrapper = function (context, callback) {
 	return function (payload, waitFor) {
 		var result = callback.call(context, payload, waitFor);
@@ -79,7 +80,7 @@ Dispatcher.prototype = {
         this.callbacks.push({
         		storeName: name,
             store: store,
-            func: createWrapper(context, callback),
+            func: createWrapper(store, callback),
             deps: [],
             waitFor: createWaitForMethod(store, this)
         });
