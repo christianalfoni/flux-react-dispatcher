@@ -27,7 +27,7 @@ var createWaitForMethod = function (store, dispatcher) {
 			throw new Error('Missing argument(s) in waitFor()')
 		}
 
-		var isValidStores = compareArraysWithProp(null, storeDeps, 'store', dispatcher.callbacks);
+		var isValidStores = compareArraysWithProp(null, storeDeps, 'storeName', dispatcher.callbacks);
 		if (!isValidStores) {
 			throw new Error('You have passed invalid stores to waitFor()');
 		}
@@ -35,7 +35,7 @@ var createWaitForMethod = function (store, dispatcher) {
 		var registeredCallback = getCallback(dispatcher.callbacks, store);
 		registeredCallback.deps = storeDeps;
 
-		if (isValidDependencyLayout('store', dispatcher.callbacks)) {
+		if (isValidDependencyLayout('storeName', dispatcher.callbacks)) {
 			var selectedPromises = dispatcher.callbacks.map(function(callback, index) {
 				if (storeDeps.indexOf(callback.store) >= 0) {
 					return dispatcher.promises[index];
@@ -63,15 +63,21 @@ var createWrapper = function (context, callback) {
 	}
 };
 
-function Dispatcher () {
+function Dispatcher (stores) {
 	this.callbacks = [];
 	this.promises = [];
+	this.stores = stores;
 }
 
 Dispatcher.prototype = {
 
-    register: function(store, callback) {
+    register: function(name, store, callback) {
+    		if (arguments.length < 3 || 
+    			typeof name !== 'string' || (typeof store !== null && typeof store !== 'object') || typeof callback !== 'function') {
+    			throw new Error('You are passing the wrong arguments to register()');
+    		}
         this.callbacks.push({
+        		storeName: name,
             store: store,
             func: createWrapper(context, callback),
             deps: [],

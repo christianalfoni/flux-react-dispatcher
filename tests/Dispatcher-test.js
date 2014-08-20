@@ -79,9 +79,8 @@ describe('Dispatcher', function() {
   it('should be able to dispatch to a registered callback with a payload', function () {
   	var ReactDispatcher = require('../app/main.js');
   	var Dispatcher = new ReactDispatcher();
-  	var fakeStore = {};
   	var fakePayload = {};
-  	Dispatcher.register(fakeStore, function (payload) {
+  	Dispatcher.register('fakeStore', {}, function (payload) {
   		expect(payload).to.equal(fakePayload);
   	});
   	Dispatcher.dispatch(fakePayload);
@@ -90,16 +89,14 @@ describe('Dispatcher', function() {
   	var Promise = require('es6-promise').Promise;
   	var ReactDispatcher = require('../app/main.js');
   	var Dispatcher = new ReactDispatcher();
-  	var fakeStoreA = {};
-  	var fakeStoreB = {};
   	var fakeStoreBCalled = false;
-  	Dispatcher.register(fakeStoreA, function (payload, waitFor) {
-  		return waitFor(fakeStoreB, function () {
+  	Dispatcher.register('storeA', {}, function (payload, waitFor) {
+  		return waitFor('storeB', function () {
   			expect(fakeStoreBCalled).to.equal(true);
   			done();
   		});
   	});
-  	Dispatcher.register(fakeStoreB, function () {
+  	Dispatcher.register('storeB', {}, function () {
   		fakeStoreBCalled = true;
   	});
   	Dispatcher.dispatch();
@@ -108,14 +105,12 @@ describe('Dispatcher', function() {
   	var Promise = require('es6-promise').Promise;
   	var ReactDispatcher = require('../app/main.js');
   	var Dispatcher = new ReactDispatcher();
-  	var fakeStoreA = {};
-  	var fakeStoreB = {};
-  	Dispatcher.register(fakeStoreA, function (payload, waitFor) {
-  		return waitFor(fakeStoreB, function () {});
+  	Dispatcher.register('storeA', {}, function (payload, waitFor) {
+  		return waitFor('storeB', function () {});
   	});
-  	Dispatcher.register(fakeStoreB, function (payload, waitFor) {
+  	Dispatcher.register('storeB', {}, function (payload, waitFor) {
   		var throwFunc = function () {
-  			waitFor(fakeStoreA, function () {});
+  			waitFor('storeA', function () {});
   		};
   		expect(throwFunc).to.throw(Error);
   	});
@@ -127,15 +122,13 @@ describe('Dispatcher', function() {
     var ReactDispatcher = require('../app/main.js');
     var Dispatcher = new ReactDispatcher();
     var payload = {};
-    var fakeStoreA = {};
-    var fakeStoreB = {};
-    Dispatcher.register(fakeStoreA, function (registerPayload, waitFor) {
+    Dispatcher.register('storeA', {}, function (registerPayload, waitFor) {
       expect(registerPayload).to.equal(payload);
-      return waitFor(fakeStoreB, function (waitForPayload) {
+      return waitFor('storeB', function (waitForPayload) {
         expect(waitForPayload).to.equal(payload);
       });
     });
-    Dispatcher.register(fakeStoreB, function () {
+    Dispatcher.register('storeB', {}, function () {
 
     });
     Dispatcher.dispatch(payload);

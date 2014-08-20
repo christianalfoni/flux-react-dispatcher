@@ -2,7 +2,7 @@
 
 ## React Dispatcher
 
-Part of the FLUX architecture, the dispatcher will let stores register to it with
+Part of [react-flux](https://github.com/christianalfoni/react-flux), the dispatcher will let stores register to it with
 callbacks. Read more about FLUX and the dispatcher over at [Facebook Flux](http://facebook.github.io/flux/).
 
 Download from **dist**: [ReactDispatcher.min.js](https://rawgithub.com/christianalfoni/react-flux-dispatcher/master/dist/ReactDispatcher.min.js) or install with `npm install react-flux-dispatcher`.
@@ -26,59 +26,21 @@ var StoreA = {
 	data: {},
 	handleData: function (payload) {
 		this.data = payload.data;
+	},
+	dispatch: function (payload, waitFor) {
+		switch (payload.type) {
+			case 'update':
+				waitFor('StoreB', this.handleData);
+				break;
+		}
 	}
 };
-var StoreB = {};
-Dispatcher.register(StoreA, function (payload, waitFor) {
-	switch (payload.type) {
-		case 'update':
-			waitFor(StoreB, StoreA.handleData);
-			break;
-	}
-});
-```
-You can combine the dispatcher with the [react-flux-store](https://github.com/christianalfoni/react-flux-store), giving you this syntax:
-
-*Dispatcher.js*
-```javascript
-var ReactDispatcher = require('react-flux-dispatcher');
-module.exports = new ReactDispatcher();
-```
-*StoreA.js*
-```javascript
-var Store = require('react-flux-store');
-var Dispatcher = require('./Dispatcher.js');
-var StoreB = require('./StoreB.js');
-
-var StoreA = Store.create(Dispatcher, {
-	data: {},
-	dispatch: function (payload, waitFor) {
-		waitFor(StoreB, this.replaceData);
-	},
-	replaceData: function (payload) {
-		this.data = payload.data;
-		this.emit('change');
-	}
-});
-
-module.exports = StoreA;
-```
-*StoreB.js*
-```javascript
-var Store = require('react-flux-store');
-var Dispatcher = require('./Dispatcher.js');
-
-var StoreB = Store.create(Dispatcher, {
-	data: {},
-	dispatch: function (payload, waitFor) {
-		this.manageData(payload.data);
-	},
-	manageData: function (data) {
-		// Do something to the data object
-	}
-});
-
-module.exports = StoreA;
+var StoreB = {
+	dispatch: function () {}
+};
+Dispatcher.register('StoreA', StoreA, StoreA.dispatch); // Binds the callback to the store
+Dispatcher.register('StoreB', StoreB, StoreB.dispatch);
+Dispatcher.dispatch({});
 ```
 
 ## Contribute
