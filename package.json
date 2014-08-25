@@ -1,11 +1,11 @@
 {
-  "name": "react-flux-dispatcher",
+  "name": "flux-react-dispatcher",
   "version": "1.2.2",
   "description": "React dispatcher",
   "main": "./app/main.js",
   "repository" : { 
     "type" : "git"
-    , "url" : "https://github.com/christianalfoni/react-flux-dispatcher.git"
+    , "url" : "https://github.com/christianalfoni/flux-react-dispatcher.git"
     },
   "scripts": {
     "test": "./node_modules/karma/bin/karma start karma.conf.js"
