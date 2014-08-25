@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/christianalfoni/react-flux-dispatcher.svg?branch=master)](https://travis-ci.org/christianalfoni/react-flux-dispatcher)
+[![Build Status](https://travis-ci.org/christianalfoni/flux-react-dispatcher.svg?branch=master)](https://travis-ci.org/christianalfoni/flux-react-dispatcher)
 
 ## React Dispatcher
 
