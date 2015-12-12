@@ -19,7 +19,7 @@ Download from **dist**: [ReactDispatcher.min.js](https://rawgithub.com/christian
 
 ### Example
 ```javascript
-var ReactDispatcher = require('ReactDispatcher');
+var ReactDispatcher = require('flux-react-dispatcher');
 var Dispatcher = new ReactDispatcher();
 
 var StoreA = {
