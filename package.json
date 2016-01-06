@@ -1,6 +1,6 @@
 {
   "name": "flux-react-dispatcher",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "description": "React dispatcher",
   "main": "./app/main.js",
   "repository" : {
