@@ -1,9 +1,9 @@
 {
   "name": "flux-react-dispatcher",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "React dispatcher",
   "main": "./app/main.js",
-  "repository" : { 
+  "repository" : {
     "type" : "git"
     , "url" : "https://github.com/christianalfoni/flux-react-dispatcher.git"
     },
