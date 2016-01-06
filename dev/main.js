@@ -80,7 +80,7 @@ Dispatcher.prototype = {
         this.callbacks.push({
         		storeName: name,
             store: store,
-            func: createWrapper(context, callback),
+            func: createWrapper(this, callback),
             deps: [],
             waitFor: createWaitForMethod(store, this)
         });
